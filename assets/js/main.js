@@ -218,15 +218,151 @@
 
 	// Document on load.
 	$(function(){
-		fullHeight();
-		counterWayPoint();
-		contentWayPoint();
-		burgerMenu();
+		fullHeight()
+		counterWayPoint()
+		contentWayPoint()
+		burgerMenu()
 
-		clickMenu();
-		navigationSection();
-		mobileMenuOutsideClick();
-		sliderMain();
-		owlCrouselFeatureSlide();
+		clickMenu()
+		navigationSection()
+		mobileMenuOutsideClick()
+		sliderMain()
+		owlCrouselFeatureSlide()
+		fetchWorks()
 	});
+
+	function fetchWorks() {
+
+		const personalWorks = {
+			body: [
+				{
+					client: "React Weather",
+					description: "",
+					link: "https://react-weather-alpha.vercel.app/",
+					image: "https://raw.githubusercontent.com/wribeiiro/react-weather/master/weather.jpg",
+					class: "Website",
+					tags: "React;Javascript;HTML;CSS;API",
+				},
+				{
+					client: "Amazon Prime Video Clone",
+					description: "",
+					link: "https://amazon-prime-video-clone.vercel.app/",
+					image: "https://raw.githubusercontent.com/wribeiiro/amazon-prime-video-clone/master/home.jpg",
+					class: "Website",
+					tags: "React;Javascript;HTML;CSS;API",
+				},
+				{
+					client: "Clone Whatsapp Chat",
+					description: "",
+					link: "https://wribeiiro.com/clone-whatsapp/",
+					image: "https://raw.githubusercontent.com/wribeiiro/clone-whatsapp/master/login.jpg",
+					class: "System",
+					tags: "PHP;Javascript;Jquery;HTML;CSS;BOOTSTRAP",
+				},
+				{
+					client: "Danfe Generator",
+					description: "",
+					link: "https://wribeiiro.com/danfe-generator/",
+					image: "https://raw.githubusercontent.com/wribeiiro/danfe-generator/master/screen.png",
+					class: "System",
+					tags: "PHP;PHP-NFE;API",
+				},
+				{
+					client: "React Spotify Player",
+					description: "",
+					link: "https://react-spotify-rho.vercel.app/",
+					image: "https://raw.githubusercontent.com/wribeiiro/react-spotify/master/player.jpg",
+					class: "Website",
+					tags: "React;Javascript;HTML;CSS;API",
+				},
+				{
+					client: "React Evil",
+					description: "",
+					link: "https://react-evil.vercel.app/",
+					image: "https://raw.githubusercontent.com/wribeiiro/react-evil/master/home.jpg",
+					class: "Website",
+					tags: "React;Javascript;HTML;CSS;API",
+				},
+			],
+			code: 200
+		}
+		
+		const pworkDiv = $(`#personal-work`)
+		const workDiv  = $(`#mypage-work`)
+
+		const createWorks = (data, div) => {
+
+			console.log(data)
+			
+			let template = ``
+
+			if (data.code === 200) {
+
+				data.body.forEach(element => {
+
+					let tags = ``;
+
+					element.tags.split(';').forEach((myString) => tags += `<span><a rel="noopener" href="${element.link}" target="_blank">${myString}</a></span>`)
+				
+					template += `
+					<div class="col-md-6">
+						<div class="project" style="background-image: url('${element.image}'); height: 300px;">
+							<div class="desc">
+								<div class="con">
+									<h3><a rel="noopener" href="${element.link}" target="_blank">${element.client}</a></h3>
+									<span>${element.class}</span>
+									<p class="icon">${tags}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					`
+				})
+			}
+
+			div.html(template)
+		}
+
+		const loader = (status, div) => {
+			let template = ``
+
+			if (status === 0) {
+				template = `<div class="col-md-12 col-xs-12">
+								<div class="project">
+									Fetching works, please wait...
+								</div>
+							</div>`
+			} 
+
+			if (status === 1) {
+				template = `<div class="col-md-12 col-xs-12">
+								<div class="project">
+									A error ocurred when trying to get works, try again later
+								</div>
+							</div>`
+			}
+
+			div.html(template)				
+		}
+
+		$.ajax({
+			type: "GET",
+			url: "https://www.wribeiiro.com/lumen-api/api/v1/work",
+			dataType: "JSON",
+			success: (response) => {
+				createWorks(response, workDiv)
+				createWorks(personalWorks, pworkDiv)
+			},
+			beforeSend: (xhr) => {
+				xhr.setRequestHeader(`Authorization`, `Basic 69864bfe57e7a39e8ab90107a3bd0f75eb82bc009249dbb504f0af6058bd540650d3316476e5597fa4daa282250826c569e8bddd22a20d43ec5b3a605e6bedb8gstI9JsMCW3Yr04o0P2JKJyJKSCCk1RUQBn6Ic7DEuVynLVoaLfXxEkoZe5PCAwC`)
+				loader(0, workDiv)
+				loader(0, pworkDiv)
+			},
+			error: () => {
+				loader(1, workDiv)
+				loader(1, pworkDiv)
+			},
+			complete: () => {}
+		})
+	}
 }());
